@@ -1,0 +1,81 @@
+--------- ONE-TO-ONE --------
+
+1️⃣ User A sends a message  
+├──> Chat Service (via WebSocket or API)  
+├──> Auth Check (Chat Service -> User Service) ✅  
+├──> Check if User B is online (Redis)  
+2️⃣ If online:  
+├──> Send message via WebSocket  
+3️⃣ If offline:  
+├──> Save message in DB  
+├──> Notify Notification Service  
+├──> Push notification to User B  
+4️⃣ When User B comes online:  
+├──> Chat Service fetches unread messages  
+├──> Messages sent to User B  
+├──> Messages marked as "delivered"  
+
+            FULL-STACK
+[Frontend] 
+│
+├── 1️⃣ User connects to WebSocket (ws://chat-service)
+│
+├── 2️⃣ User sends message (emit "send_message" event)
+│       { senderId: 1, receiverId: 2, message: "Hey!" }
+│
+├── 3️⃣ Chat Service checks if receiver is online
+│       ├── ✅ If Online → Delivers via WebSocket ("receive_message")
+│       ├── ❌ If Offline → Stores in DB, triggers Notification Service
+│
+├── 4️⃣ Receiver gets push notification (if offline)
+│
+├── 5️⃣ Receiver reconnects → Fetches unread messages via WebSocket
+
+            IF NEED RECONNECT ON PUSH Notification
+
+[Frontend]  
+  │  
+  ├── 1️⃣ User connects to WebSocket (ws://chat-service) // every time open the app open new connection and store in redis
+  │       ├── Sends "join" event → { userId: 1 }  
+  │       ├── Chat Service stores socket ID in Redis  
+  │  
+  ├── 2️⃣ User sends message (emit "send_message" event)  
+  │       { senderId: 1, receiverId: 2, message: "Hey!" }  
+  │  
+  │  
+[Chat Service]  
+  │  
+  ├── 3️⃣ Validates sender authentication  
+  │       ├── ✅ If token is valid → Proceed  
+  │       ├── ❌ If invalid → Emit "error" event (Unauthorized)  
+  │  
+  ├── 4️⃣ Checks if receiver is online (Redis lookup)  
+  │       ├── ✅ If Online → Delivers via WebSocket ("receive_message")  
+  │       ├── ❌ If Offline → Stores message in DB, triggers Notification Service  
+  │  
+  ├── 5️⃣ Saves message to DB (status: delivered/undelivered)  
+  │  
+  │  
+[Notification Service]  
+  │  
+  ├── 6️⃣ If receiver is offline → Sends push notification  
+  │       ├── Using Firebase/APNS (mobile)  
+  │       ├── Using Web Notifications (browser)  
+  │  
+  │  
+[Frontend (Receiver)]  
+  │  
+  ├── 7️⃣ Receiver gets push notification (if offline)  
+  │  
+  ├── 8️⃣ Receiver reconnects → Fetches unread messages via WebSocket  
+  │       ├── Emit "fetch_unread_messages"  
+  │       ├── Chat Service returns stored messages from DB  
+  │  
+  ├── 9️⃣ Marks messages as "read" in DB  
+  │  
+  ├── 🔄 Chat continues in real-time  
+
+
+--------- ONE-TO-GROUP --------
+
+Cloudinary 

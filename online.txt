@@ -1,0 +1,12 @@
+system-design: https://app.diagrams.net/#G1dyH9at6VBRfEnJV6RkVGK-mr0qOGBHhz#%7B%22pageId%22%3A%22Sy49UtgopyenSXGhqNLd%22%7D
+DB-design: https://drawsql.app/teams/no-304/diagrams/whatsapp
+
+
+Plan after eid -> 
+6h work 
+2h ps and rev dsa 
+2h (3 days whatsapp and 3 days db course)
+
+friday -> whatsapp
+
+notes-> should call yasser to get roadmap to start dsa revision correctly 
