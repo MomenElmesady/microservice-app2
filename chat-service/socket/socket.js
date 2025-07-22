@@ -1,6 +1,6 @@
 const redis = require('../config/redis');
 const { verifyToken } = require('../utils/verifyJWT');
-const { updateMessageToRead, deleteMessage, editMessage, createMessageReact, sentTypingEvent, markMessageAsRead, saveMessage, markChatAsRead, markUserMessagesAsDelivered, updateUserStatusToOnline, updateUserStatusToOffline } = require('../services/messageService');
+const { updateMessageToRead, deleteMessage, editMessage, createMessageReact, sentTypingEvent, markMessageAsRead, saveMessage, markChatAsRead, markUserMessagesAsDelivered, updateUserStatusToOnline, updateUserStatusToOffline, getMessageData } = require('../services/messageService');
 const { publishNotification } = require("../helpers/pushNotification")
 module.exports = (io) => {
   // Middleware to authenticate socket connection
@@ -50,11 +50,13 @@ module.exports = (io) => {
           // Update sender's status to "Delivered"
           io.to(senderSocketId).emit('status_update', { messageId: messageObj['id'], status: 'delivered', chatId: message.chatId });
         } else {
+          const newMessage = await getMessageData(messageObj.id);
+          console.log("new message: ",newMessage);
           await publishNotification({
             receiverId,
             senderId: userId,
             messageId: messageObj.id,
-            content: message,
+            content: newMessage,
           });
           // rabbitMQ
           // Trigger Notification Service (e.g., via HTTP or queue)

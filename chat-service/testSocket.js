@@ -1,13 +1,15 @@
 // testClient.js
 
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtb21lbmVsbWVzYWR5NDgwNTNAZ21haWwuY29tIiwiaWF0IjoxNzUyNjcxODIyLCJleHAiOjE3NTI3NTgyMjJ9.FBmuNnzgueH50B9XlHuYiXcEplIYW62wCknVhiPuLJ8"
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtb21lbmVsbWVzYWR5NDgwNTNAZ21haWwuY29tIiwiaWF0IjoxNzUzMTE3NjE0LCJleHAiOjE3NTMyMDQwMTR9.7qnssJ-a7Umlz4FsxoWa2xQUc_VUJ0hQBhiYairRI2k"
 const { io } = require("socket.io-client");
 
-const socket = io("http://localhost:3002", {
+const socket = io("http://localhost", {
   auth: {
-    token: token
-  }
+    token: token,
+  },
+  path: '/chat/socket.io',
+  transports: ['websocket']
 });
 
 socket.on("connect", () => {
@@ -16,7 +18,7 @@ socket.on("connect", () => {
     console.log("After 2 seconds");
     sendMessage(socket, 1, {
       chatId: 6,
-      content: "Hello from sender",
+      content: "Hello from sender2222",
       type: "text",
       media_url: null
     });

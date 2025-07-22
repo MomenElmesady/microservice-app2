@@ -2,33 +2,40 @@
 const User = require("../models/user.model")
 const { sendPushNotification } = require("./pushNotification")
 const queue = 'notification.new_message';
-const { connectRabbitMQ } = require("../config/rabbitmq")
+const { connectRabbitMQ } = require("../config/rabbitmq");
 
 // RabbitMQ consumer to listen for new message notifications
 async function listenForNewMessages() {
-  console.log("Starting RabbitMQ consumer for new messages...");
-  const connection = await connectRabbitMQ();
-  const channel = await connection.createChannel();
+  try {
 
-  await channel.assertQueue(queue, { durable: true });
-
-  console.log(`Waiting for messages in ${queue}. To exit press CTRL+C`);
-  channel.consume(queue, async (msg) => {
-    const messageData = JSON.parse(msg.content.toString());
-    console.log('Received message:', messageData);
-
-    // Call function to send push notification to the user
-    try {
-      const token = await getUserFCMToken(messageData.receiverId);
-      if (token) {
-        await sendPushNotification(token, messageData);
+    console.log("Starting RabbitMQ consumer for new messages...");
+    const connection = await connectRabbitMQ();
+    const channel = await connection.createChannel();
+  
+    await channel.assertQueue(queue, { durable: true });
+  
+    console.log(`Waiting for messages in ${queue}. To exit press CTRL+C`);
+    channel.consume(queue, async (msg) => {
+      
+      const messageData = JSON.parse(msg.content.toString());
+      console.log('Received message:', messageData);
+  
+      // Call function to send push notification to the user
+      try {
+        const token = await getUserFCMToken(1);
+        console.log(token)
+        if (token) {
+          await sendPushNotification(token, messageData);
+        }
+      } catch (error) {
+        console.error('Error sending notification', error);
       }
-    } catch (error) {
-      console.error('Error sending notification', error);
-    }
-
-    channel.ack(msg);
-  });
+  
+      channel.ack(msg);
+    });
+  } catch(error){
+    console.log(error,"errrrrr")
+  }
 }
 
 // Function to fetch the receiver's FCM token (you can implement this to query your database)

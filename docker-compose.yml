@@ -4,8 +4,9 @@ services:
     build: ./user-service
     ports:
       - "3001:3000"
-    # depends_on:
-    #   - mysql
+    volumes:
+      - ./user-service:/app
+      - /app/node_modules
     environment:
       DB_HOST: host.docker.internal
       DB_PORT: 3306
@@ -22,8 +23,9 @@ services:
     build: ./chat-service
     ports:
       - "3002:3000"
-    # depends_on:
-    #   - mysql
+    volumes:
+      - ./chat-service:/app
+      - /app/node_modules
     environment:
       DB_HOST: host.docker.internal
       DB_USER: root
@@ -33,26 +35,14 @@ services:
       ACCESS_SECRET: abcdefghigk
       RABBITMQ_HOST: rabbitmq
 
-
-  # mysql:
-  #   image: mysql:8
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: Momen@@010
-  #     MYSQL_DATABASE: whatsapp
-  #   # ports:
-  #   #   - "3306:3306"
-
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"     # للـ RabbitMQ broker
-      - "15672:15672"   # للـ UI بتاع RabbitMQ
   notification-service:
     build: ./notification-service
+    volumes:
+      - ./notification-service:/app
+      - /app/node_modules
     depends_on:
       - rabbitmq
-      - user-service  # لو بيحتاج يقرأ fcm_token من قاعدة بيانات user
+      - user-service
     environment:
       DB_HOST: host.docker.internal
       DB_PORT: 3306
@@ -61,10 +51,13 @@ services:
       DB_NAME: whatsapp
       RABBITMQ_URL: amqp://rabbitmq
       RABBITMQ_HOST: rabbitmq
-
     restart: always
 
-  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   nginx:
     build: ./nginx
@@ -73,3 +66,4 @@ services:
     depends_on:
       - user-service
       - chat-service
+      - notification-service

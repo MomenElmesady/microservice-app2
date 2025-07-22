@@ -44,6 +44,7 @@ const connection = await amqp.connect(`amqp://${rabbitHost}:5672`);  const chann
 
   console.log(`Waiting for messages in ${queue}. To exit press CTRL+C`);
   channel.consume(queue, async (msg) => {
+    console.log('messsssage')
     const messageData = JSON.parse(msg.content.toString());
     console.log('Received message:', messageData);
 

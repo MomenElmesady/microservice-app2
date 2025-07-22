@@ -1,20 +1,22 @@
-# Use official Node.js base image
 FROM node:18
 
-# Set working directory
+# تثبيت nodemon عالميًا لتعمل أوامر nodemon داخل الحاوية
+RUN npm install -g nodemon
+
+# تحديد مجلد العمل
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# نسخ ملفات الباكدج فقط لتقليل إعادة بناء الصورة عند تغييرات الكود
 COPY package*.json ./
 
-# ✅ Fix for bcrypt/native issues
+# تثبيت الحزم
 RUN npm install --legacy-peer-deps
 
-# Copy app files
+# نسخ بقية الكود بعد التثبيت
 COPY . .
- 
-# Expose port
+
+# فتح البورت المناسب
 EXPOSE 3000
 
-# Start the server
-CMD ["node", "server.js"]
+# أمر التشغيل الرئيسي
+CMD ["nodemon", "server.js"]

@@ -1,4 +1,5 @@
 const Message = require('../models/message.model');
+const User = require('../models/user.model');
 const { Op } = require('sequelize');
 const redis = require('../config/redis');
 const Contact = require('../models/contact.model');
@@ -64,6 +65,19 @@ const updateUserStatusToOnline = async (userId, io) => {
     })
   );
 
+};
+const getMessageData = async (userId, io) => {
+  return await Message.findOne({
+    where: { id: 1 },
+    attributes: ['id', 'content', 'createdAt', 'media_url', 'chat_id'],
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name', 'profile_image'],
+      }
+    ],
+  });
 };
 const updateUserStatusToOffline = async (userId, io) => {
   const friends = await Contact.findAll({
@@ -346,4 +360,4 @@ const sentTypingEvent = async (userId, chatId, status, io) => {
 };
 
 
-module.exports = { markMessageAsRead, updateMessageToRead, deleteMessage, editMessage, createMessageReact, sentTypingEvent, saveMessage, markUserMessagesAsDelivered, markChatAsRead, updateUserStatusToOnline, updateUserStatusToOffline };
+module.exports = {getMessageData, markMessageAsRead, updateMessageToRead, deleteMessage, editMessage, createMessageReact, sentTypingEvent, saveMessage, markUserMessagesAsDelivered, markChatAsRead, updateUserStatusToOnline, updateUserStatusToOffline };

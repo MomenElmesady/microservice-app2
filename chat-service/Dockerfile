@@ -1,14 +1,22 @@
 FROM node:18
 
+# تثبيت nodemon عالميًا لتعمل أوامر nodemon داخل الحاوية
+RUN npm install -g nodemon
+
+# تحديد مجلد العمل
 WORKDIR /app
 
+# نسخ ملفات الباكدج فقط لتقليل إعادة بناء الصورة عند تغييرات الكود
 COPY package*.json ./
 
-# Prevent native build conflicts like bcrypt and peer dependency issues
+# تثبيت الحزم
 RUN npm install --legacy-peer-deps
 
+# نسخ بقية الكود بعد التثبيت
 COPY . .
 
+# فتح البورت المناسب
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+# أمر التشغيل الرئيسي
+CMD ["nodemon", "server.js"]
