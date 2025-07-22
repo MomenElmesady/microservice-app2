@@ -1,7 +1,7 @@
 // testClient.js
 
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtb21lbmVsbWVzYWR5NDgwNTNAZ21haWwuY29tIiwiaWF0IjoxNzUzMTE3NjE0LCJleHAiOjE3NTMyMDQwMTR9.7qnssJ-a7Umlz4FsxoWa2xQUc_VUJ0hQBhiYairRI2k"
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtb21lbmVsbWVzYWR5NDgwNTNAZ21haWwuY29tIiwiaWF0IjoxNzUzMjE2MTEyLCJleHAiOjE3NTMzMDI1MTJ9.T7apyHWCRHkqNauytnwkRi18PHc8K30THm1JN_sTeQk"
 const { io } = require("socket.io-client");
 
 const socket = io("http://localhost", {

@@ -31,7 +31,7 @@ module.exports = (io) => {
     await redis.set(`user:${userId}`, socket.id);
     console.log(`User ${userId} is online`);
     await markUserMessagesAsDelivered(userId, io)
-
+    console.log('connnnnnnnnnnnnnnnnnnnnnnn3')
 
     socket.on('send_message', async ({ receiverId, message }) => {
       try {

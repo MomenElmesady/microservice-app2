@@ -18,12 +18,12 @@ async function listenForNewMessages() {
     channel.consume(queue, async (msg) => {
       
       const messageData = JSON.parse(msg.content.toString());
-      console.log('Received message:', messageData);
+      console.log('Received message22222:', messageData);
   
       // Call function to send push notification to the user
       try {
-        const token = await getUserFCMToken(1);
-        console.log(token)
+        const token = await getUserFCMToken(messageData.receiverId);
+        console.log("token",token)
         if (token) {
           await sendPushNotification(token, messageData);
         }

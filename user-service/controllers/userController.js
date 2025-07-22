@@ -125,11 +125,11 @@ exports.registerFCMToken = async (req, res, next) => {
 
   try {
     // Check if the user exists, if not create or update
-    let user = await User.findOne({ userId });
+    let user = await User.findOne({ id: userId });
     if (!user) {
       return res.status(404).json({ message: 'user not found.' });
     } else {
-      user.fcmToken = fcmToken;  // Update token if it's already there
+      user.fcm_token = fcmToken;  // Update token if it's already there
     }
 
     await user.save();
