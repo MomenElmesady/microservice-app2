@@ -125,7 +125,8 @@ exports.registerFCMToken = async (req, res, next) => {
 
   try {
     // Check if the user exists, if not create or update
-    let user = await User.findOne({ id: userId });
+    let user = await User.findOne({ where :{id: userId }});
+    console.log(user,"ussser")
     if (!user) {
       return res.status(404).json({ message: 'user not found.' });
     } else {

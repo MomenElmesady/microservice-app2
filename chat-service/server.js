@@ -8,6 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const asc = require("./models/asc")
 const io = socketIO(server, {
+  path: '/socket.io', // DO NOT include /chat
   cors: {
     origin: '*',
   }
