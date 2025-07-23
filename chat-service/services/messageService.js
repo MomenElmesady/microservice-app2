@@ -66,9 +66,9 @@ const updateUserStatusToOnline = async (userId, io) => {
   );
 
 };
-const getMessageData = async (userId, io) => {
+const getMessageData = async (id) => {
   return await Message.findOne({
-    where: { id: 1 },
+    where: { id },
     attributes: ['id', 'content', 'createdAt', 'media_url', 'chat_id'],
     include: [
       {
